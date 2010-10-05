@@ -1,10 +1,9 @@
 #!/bin/bash
 
-PARTITION="/home"
-
+PARTITION="/host"
 max_use=$1
 
-partition_info=`df | tr -s ' ' | cut -d' ' -f5,6 | grep "$PARTITION"`
+partition_info=`df | grep -e " $PARTITION$"`
 
 if [ -z "$partition_info" ]
 then
@@ -12,7 +11,7 @@ then
 	exit 1
 fi
 
-use=`echo $partition_info | cut -f1 -d' ' | tr -d '%'`
+use=`echo "$partition_info" | sed -r -e "s/.+\b(\w+)%.+/\1/"`
 
 if [ $use -gt $max_use ]
 then
